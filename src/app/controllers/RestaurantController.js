@@ -1,14 +1,14 @@
 import * as Yup from 'yup';
-import User from '../models/User';
+import Restaurant from '../models/Restaurant';
 
-class UserController {
-  // Função responsável por criar um usuário
+class RestaurantController {
+  // Função responsável por criar um restaurante
   async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       email: Yup.string().email().required(),
-      cpf: Yup.string().required(),
       phone: Yup.string().required(),
+      cnpj: Yup.string().required(),
       password: Yup.string().required().min(8),
     });
 
@@ -16,24 +16,26 @@ class UserController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const userExists = await User.findOne({ where: { email: req.body.email } });
+    const restaurantExists = await Restaurant.findOne({
+      where: { email: req.body.email },
+    });
 
-    if (userExists) {
-      return res.status(400).json({ error: 'User already exists' });
+    if (restaurantExists) {
+      return res.status(400).json({ error: 'Restaurant already exists' });
     }
 
-    const { id, name, email, cpf, phone } = await User.create(req.body);
+    const { id, name, email, phone, cnpj } = await Restaurant.create(req.body);
 
     return res.json({
       id,
       name,
       email,
-      cpf,
       phone,
+      cnpj,
     });
   }
 
-  // Função responsável por att os dados do usuário
+  // Função responsável por att os dados do restaurante
   async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string(),
@@ -56,21 +58,21 @@ class UserController {
 
     const { email, oldPassword } = req.body;
 
-    const user = await User.findByPk(req.userId);
+    const restaurant = await Restaurant.findByPk(req.userId);
 
-    if (email !== user.email) {
-      const userExists = await User.findOne({ where: { email } });
+    if (email !== restaurant.email) {
+      const restaurantExists = await Restaurant.findOne({ where: { email } });
 
-      if (userExists) {
+      if (restaurantExists) {
         return res.status(400).json({ error: 'User already exists' });
       }
     }
 
-    if (oldPassword && !(await user.checkPassword(oldPassword))) {
+    if (oldPassword && !(await restaurant.checkPassword(oldPassword))) {
       return res.status(400).json({ error: 'Password does not match' });
     }
 
-    const { id, name, phone } = await user.update(req.body);
+    const { id, name, phone } = await restaurant.update(req.body);
 
     return res.json({
       id,
@@ -90,4 +92,4 @@ class UserController {
   // }
 }
 
-export default new UserController();
+export default new RestaurantController();
