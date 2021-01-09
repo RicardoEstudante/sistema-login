@@ -2,7 +2,7 @@ import User from '../models/User';
 import File from '../models/File';
 
 class ProviderController {
-  // Função responsável listar todos os usuários
+  // Listing all providers
   async index(req, res) {
     const provider = await User.findAll({
       where: { provider: true },

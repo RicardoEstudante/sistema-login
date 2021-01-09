@@ -74,15 +74,6 @@ class UserController {
       provider,
     });
   }
-
-  // Função responsável listar todos os usuários
-  // async index(req, res) {
-  //   const users = await User.findAll({ User });
-
-  //   const allUsers = users.map((user) => user);
-
-  //   return res.json(allUsers);
-  // }
 }
 
 export default new UserController();
