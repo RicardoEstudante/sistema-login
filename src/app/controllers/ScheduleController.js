@@ -1,22 +1,23 @@
 import { startOfDay, parseISO, endOfDay } from 'date-fns';
 import { Op } from 'sequelize';
 
-import User from '../models/User';
+import Restaurant from '../models/Restaurant';
 import Appointment from '../models/Appointment';
 
 class ScheduleController {
   async index(req, res) {
-    const checkUserProvider = await User.findOne({
-      where: { id: req.userId, provider: true },
+    const checkRestaurantExist = await Restaurant.findOne({
+      where: { id: req.userId },
     });
 
-    if (!checkUserProvider) {
-      return res.status(401).json({ error: 'User is not provider' });
+    if (!checkRestaurantExist) {
+      return res.status(401).json({ error: 'Restaurant is not exists' });
     }
 
     const { date } = req.query;
     const parsedDate = parseISO(date);
 
+    console.log(parsedDate);
     console.log(startOfDay());
 
     const appointments = await Appointment.findAll({

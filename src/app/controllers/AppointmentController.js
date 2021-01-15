@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore } from 'date-fns';
 
 import User from '../models/User';
+import Restaurant from '../models/Restaurant';
 import Appointment from '../models/Appointment';
 import File from '../models/File';
 
@@ -18,8 +19,7 @@ class AppointmentController {
       attributes: ['id', 'date'],
       include: [
         {
-          model: User,
-          as: 'provider',
+          model: Restaurant,
           attributes: ['id', 'name'],
           include: [
             {
@@ -49,10 +49,9 @@ class AppointmentController {
     const { provider_id, date } = req.body;
 
     // Check if provider_id is a provider
-    const isProvider = await User.findOne({
+    const isProvider = await Restaurant.findOne({
       where: {
         id: provider_id,
-        provider: true,
       },
     });
 
@@ -63,11 +62,11 @@ class AppointmentController {
     }
 
     /* Verifying if provider and user are the same */
-    if (req.userId === provider_id) {
-      return res
-        .status(401)
-        .json({ error: 'You can not create an appointments with yourself' });
-    }
+    // if (req.userId === provider_id) {
+    //   return res
+    //     .status(401)
+    //     .json({ error: 'You can not create an appointments with yourself' });
+    // }
 
     /* Ignoring minutes and seconds(18:38:55 => 18:00:00) */
     const hourStart = startOfHour(parseISO(date));
@@ -91,6 +90,10 @@ class AppointmentController {
     }
 
     /* Creating appointment */
+
+    console.log(req.userId);
+    console.log(provider_id);
+
     const appointments = await Appointment.create({
       user_id: req.userId,
       provider_id,

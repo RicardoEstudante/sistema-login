@@ -7,6 +7,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
+
       date: {
         allowNull: false,
         type: Sequelize.DATE,
@@ -22,7 +23,7 @@ module.exports = {
 
       provider_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' },
+        references: { model: 'restaurants', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'SET NULL',
         allowNull: true,
